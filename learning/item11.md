@@ -1,4 +1,4 @@
-item11: Override clone judiciously
+### item11: Override clone judiciously
 
 mixin interface?
 
@@ -6,8 +6,7 @@ Cloneable is a mixin interface
 
 Object's clone method is protected.
 
-You can not invoke the clone method on an object merely because it implements Cloneable withour resorting to reflection.
-
+You can not invoke the clone method on an object merely because it implements Cloneable without resorting to reflection.
 
 這一個 item 教我們怎麼實作一個運作良好的 clone method.
 討論什麼時候作最恰當，以及其他替代方案
@@ -39,12 +38,33 @@ It modifies the behavior of a protected method on a superclass.
 ####  Never make the client do anything the library can do for the client.
 ```
 
-若 clone 用在一個 immutable object 沒有問題！直接照規定使用即可
+* 若 clone 用在一個 immutable object 沒有問題！直接照規定使用即可
+* 如果 clone 用在一個 mutable object，該如何處理呢？
+    + 這邊用一個 Stack 為範例:
 
-如果 clone 用在一個 mutable object，該如何處理呢？
-這邊用一個 Stack 為範例
+
+elements in Stack are mutable so that super.clone returns the same elements of original object!
+so let's clone recursively...
+
 
 [item53] Reflection
+
+---
+> 2016/08/08
+
+> In effect, the _clone_ method functions as another constructor;
+> you must ensure that it dose no harm to the original object and that it properly establishes invariants on the clone.
+
+#### 2016/09/29
+clone & final
+> the clone architecture is incompatible with normal use of final fields referring to mutable objects.
+
+if original class field is final, it cannot assign other value.
+if you wanna make a class cloneable, you should remove the _final_ modifier.
+it is not sufficient to call clone recursively.
+talk about some good conventions to clone a complex object
+
+
 
 
 #### 問題：
@@ -53,17 +73,14 @@ It modifies the behavior of a protected method on a superclass.
 
 * what is automatic constructor chaining?
 
-* what is covariant return type?
+* what is covariant return type?    
 邏輯上跟著改變（協變）
 http://stackoverflow.com/questions/1882584/what-is-a-covariant-return-type
 
-
-
-* 什麼是 reflection? 弄清楚
+* 什麼是 reflection? 弄清楚    
 就是我知道某個 interface 的 method，但我不知道這個物件有沒有這個 method
-我就可以用 reflection 來試試看，有的話就呼叫，沒有的話就沒有。
+我就可以用 reflection 來試試看，有的話就呼叫，沒有的話就沒有。    
 http://stackoverflow.com/questions/37628/what-is-reflection-and-why-is-it-useful
-
 http://docs.oracle.com/javase/tutorial/reflect/index.html
 
 Reflection 的使用
